@@ -1,0 +1,12 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>ASP.NET OAuth without Identity</h1>
+    <p class="lead">This sample shows how you can use the OAuth providers without having to use ASP.NET Identity</p>
+    @Html.ActionLink("Authenticate with GitHub", "AuthorizeGitHub", null, new { @class = "btn btn-primary btn-lg" })
+</div>
+
+<h2>GitHub AccessToken</h2>
+<p>@ViewBag.AccessToken</p>
