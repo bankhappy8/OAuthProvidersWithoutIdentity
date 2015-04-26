@@ -4,35 +4,43 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using OAuthProvidersWithoutIdentity.Models;
+using Octokit;
 
 namespace OAuthProvidersWithoutIdentity.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            if (HttpContext.Session["GitHubToken"] != null)
-                ViewBag.AccessToken = HttpContext.Session["GitHubToken"].ToString();
+            var userDisplayModel = new UserDisplayModel();
 
-            return View();
-        }
-
-        public ActionResult AuthorizeGitHub()
-        {
-            return new ChallengeResult("GitHub", Url.Action("AuthorizeGitHubSuccess"));
-        }
-
-        public async Task<ActionResult> AuthorizeGitHubSuccess()
-        {
             var authenticateResult = await HttpContext.GetOwinContext().Authentication.AuthenticateAsync("ExternalCookie");
             if (authenticateResult != null)
             {
                 var tokenClaim = authenticateResult.Identity.Claims.FirstOrDefault(claim => claim.Type == "urn:token:github");
                 if (tokenClaim != null)
-                    HttpContext.Session["GitHubToken"] = tokenClaim.Value;
+                {
+                    var accessToken = tokenClaim.Value;
+
+                    var gitHubClient = new GitHubClient(new ProductHeaderValue("OAuthTestClient"));
+                    gitHubClient.Credentials = new Credentials(accessToken);
+
+                    var user = await gitHubClient.User.Current();
+
+                    userDisplayModel.AccessToken = accessToken;
+                    userDisplayModel.Name = user.Name;
+                    userDisplayModel.AvatarUrl = user.AvatarUrl;
+                    
+                }
             }
 
-            return RedirectToAction("Index");
+            return View(userDisplayModel);
+        }
+
+        public ActionResult AuthorizeGitHub()
+        {
+            return new ChallengeResult("GitHub", Url.Action("Index"));
         }
     }
 }

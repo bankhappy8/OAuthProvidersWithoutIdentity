@@ -1,4 +1,5 @@
-﻿@{
+﻿@model OAuthProvidersWithoutIdentity.Models.UserDisplayModel
+@{
     ViewBag.Title = "Home Page";
 }
 
@@ -8,5 +9,10 @@
     @Html.ActionLink("Authenticate with GitHub", "AuthorizeGitHub", null, new { @class = "btn btn-primary btn-lg" })
 </div>
 
-<h2>GitHub AccessToken</h2>
-<p>@ViewBag.AccessToken</p>
+@if (!string.IsNullOrEmpty(Model.AccessToken))
+{
+    <h2>GitHub Details</h2>
+    <p>Access Token: @Model.AccessToken</p>
+    <p>Name: @Model.Name</p>
+    <img src="@Model.AvatarUrl" style="width: 100px; height: 100px;"/>
+}

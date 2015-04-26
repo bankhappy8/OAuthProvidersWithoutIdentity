@@ -27,8 +27,8 @@ namespace OAuthProvidersWithoutIdentity
 
             var options = new GitHubAuthenticationOptions
             {
-                ClientId = "your client id",
-                ClientSecret = "your client secret",
+                ClientId = "921b00c13dbb0574812f",
+                ClientSecret = "00367a8f18c7d8cd45ed3e34de64e7fdacec9034",
                 Provider = new GitHubAuthenticationProvider
                 {
                     OnAuthenticated = context =>
